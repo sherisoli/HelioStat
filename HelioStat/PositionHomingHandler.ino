@@ -2,7 +2,6 @@
 #define MAXZEHOMESTEP 10000 // ZE home max subject to revision
 #define STEPSAZHOME 1800 // AZ home position = East = +90 degrees = 1800 steps
 #define ANGLEZEHOME 90.0 // ZE home position = Horizon = +90 degrees
-#define STEPDLY 5
 
 void homeAzimuth() {
   Serial.println("");
