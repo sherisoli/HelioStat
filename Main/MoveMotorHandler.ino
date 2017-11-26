@@ -1,12 +1,12 @@
 void MoveMotorAZ(int steps) {
-  Serial.print("Moving Azimuth motor this many steps: ");
-  Serial.println(steps);
   if (steps == 0) {
     return;
   } else if (steps > 0) {
+    Serial.print("Moving Azimuth motor clockwise "); Serial.print(steps); Serial.print(" steps...\n");
     digitalWrite(MOTAZCWCCW, LOW); // positive # of steps means CW = LOW
   } else { // steps < 0
     steps = -steps; // absolute value
+    Serial.print("Moving Azimuth motor counter-clockwise "); Serial.print(steps); Serial.print(" steps...\n");
     digitalWrite(MOTAZCWCCW, HIGH); // negative # of steps means CCW = HIGH
   }
   delay(10);
@@ -19,14 +19,14 @@ void MoveMotorAZ(int steps) {
 }
 
 void MoveMotorZE(int steps) {
-  Serial.print("Moving Zenith motor this many steps: ");
-  Serial.println(steps);
   if (steps == 0) {
     return;
   } else if (steps > 0) {
+    Serial.print("Moving Zenith motor clockwise "); Serial.print(steps); Serial.print(" steps...\n");
     digitalWrite(MOTZECWCCW, HIGH); // positive # of steps means CW = LOW
   } else { // steps < 0
     steps = - steps; // absolute value
+    Serial.print("Moving Zenith motor counter-clockwise "); Serial.print(steps); Serial.print(" steps...\n");
     digitalWrite(MOTZECWCCW, LOW); // negative # of steps means CCW = HIGH
   }
   delay(10);

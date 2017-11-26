@@ -1,14 +1,10 @@
-#define pi 3.1415926535897932384
-#define twoPI (2.0*pi)
-#define rad (pi/180.0)
-#define dEarthRadius 6371.01 // km
-#define dAstroUnit 149597890 // km
-
 // Solar Vector computation derived from the journal paper
 // "Computing the Solar Vector" Solar Energy 70(5), 431-441, 2001
 // authors M. Blanco-Muriel, D.C. Alarcon-Padilla, T. Lopez-Moratalla, and M. Lara-Coira
 
-void GetSunPos(struct calendar utcTime, struct cLocation utcLocation, struct cSunCoordinates *utcSunCoordinates) {
+solarCoordinates getSunPos(struct calendar utcTime, struct location utcLocation) {
+  Serial.print("Finding the sun's position...\n");
+  struct solarCoordinates utcSunCoordinates;
   
   double dElapsedJulianDays;
   double dDecimalHours;
@@ -68,7 +64,7 @@ void GetSunPos(struct calendar utcTime, struct cLocation utcLocation, struct cSu
   {
     double dGreenwichMeanSiderealTime;
     double dLocalMeanSiderealTime;
-    double dLatitudeInRadians;
+    double degLatitudeInRadians;
     double dHourAngle;
     double dCos_Latitude;
     double dSin_Latitude;
@@ -78,24 +74,53 @@ void GetSunPos(struct calendar utcTime, struct cLocation utcLocation, struct cSu
                                  0.0657098283 * dElapsedJulianDays
                                  + dDecimalHours;
     dLocalMeanSiderealTime = (dGreenwichMeanSiderealTime * 15
-                              + utcLocation.dLongitude) * rad;
+                              + utcLocation.degLongitude) * rad;
     dHourAngle = dLocalMeanSiderealTime - dRightAscension;
-    dLatitudeInRadians = utcLocation.dLatitude * rad;
-    dCos_Latitude = cos( dLatitudeInRadians );
-    dSin_Latitude = sin( dLatitudeInRadians );
+    degLatitudeInRadians = utcLocation.degLatitude * rad;
+    dCos_Latitude = cos( degLatitudeInRadians );
+    dSin_Latitude = sin( degLatitudeInRadians );
     dCos_HourAngle = cos( dHourAngle );
-    utcSunCoordinates->dZenithAngle = (acos( dCos_Latitude * dCos_HourAngle
+    utcSunCoordinates.degZenith = (acos( dCos_Latitude * dCos_HourAngle
                                        * cos(dDeclination) + sin( dDeclination ) * dSin_Latitude));
     dY = -sin( dHourAngle );
     dX = tan( dDeclination ) * dCos_Latitude - dSin_Latitude * dCos_HourAngle;
-    utcSunCoordinates->dAzimuth = atan2( dY, dX );
-    if ( utcSunCoordinates->dAzimuth < 0.0 )
-      utcSunCoordinates->dAzimuth = utcSunCoordinates->dAzimuth + twoPI;
-    utcSunCoordinates->dAzimuth = utcSunCoordinates->dAzimuth / rad;
+    utcSunCoordinates.degAzimuth = atan2( dY, dX );
+    if ( utcSunCoordinates.degAzimuth < 0.0 )
+      utcSunCoordinates.degAzimuth = utcSunCoordinates.degAzimuth + twoPI;
+    utcSunCoordinates.degAzimuth = utcSunCoordinates.degAzimuth / rad;
     // Parallax Correction
     dParallax = (dEarthRadius / dAstroUnit)
-                * sin(utcSunCoordinates->dZenithAngle);
-    utcSunCoordinates->dZenithAngle = (utcSunCoordinates->dZenithAngle
+                * sin(utcSunCoordinates.degZenith);
+    utcSunCoordinates.degZenith = (utcSunCoordinates.degZenith
                                        + dParallax) / rad;
   }
+  Serial.print("Zenith angle (deg): ");
+  Serial.println(utcSunCoordinates.degZenith);
+  Serial.print("Azimuth angle (deg): ");
+  Serial.println(utcSunCoordinates.degAzimuth);
+  Serial.print("\n");
+  return utcSunCoordinates;
+}
+
+test(getSunPos) {
+  struct calendar currentTime;
+  currentTime.seconds = 55;
+  currentTime.minutes = 21;
+  currentTime.hours = 17;
+  currentTime.month = 11;
+  currentTime.day = 26;
+  currentTime.year = 2017;
+
+  struct location currentLocation; // McMaster Location
+  currentLocation.degLatitude = 43.434;
+  currentLocation.degLongitude = -80.535;
+
+  struct solarCoordinates expectedSunCoordinates;
+  expectedSunCoordinates.degZenith = 64.57;
+  expectedSunCoordinates.degAzimuth = 183.19;
+  
+  struct solarCoordinates actualSunCoordinates = getSunPos(currentTime, currentLocation);
+
+  assertEqual((int)expectedSunCoordinates.degZenith, (int)actualSunCoordinates.degZenith);
+  assertEqual((int)expectedSunCoordinates.degAzimuth, (int)actualSunCoordinates.degAzimuth);
 }
