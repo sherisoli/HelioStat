@@ -1,3 +1,8 @@
+/*
+ * Moves the Azimuth motor the number of steps indicated.
+ * steps: a positive number indicates clockwise motion,
+ * while a negative number indicates counterclockwise motion.
+ */
 void MoveMotorAZ(int steps) {
   if (steps == 0) {
     return;
@@ -18,6 +23,11 @@ void MoveMotorAZ(int steps) {
   }
 }
 
+/*
+ * Moves the Zenith motor the number of steps indicated.
+ * steps: a positive number indicates clockwise motion,
+ * while a negative number indicates counterclockwise motion.
+ */
 void MoveMotorZE(int steps) {
   if (steps == 0) {
     return;

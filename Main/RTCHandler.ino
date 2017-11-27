@@ -9,6 +9,10 @@ void initializeRTC() {
   rtc.adjust(DateTime(__DATE__, __TIME__));
 }
 
+/*
+ * Returns the current UTC time as a calendar struct.
+ * See Types.h for a definition of this data type.
+ */
 calendar getTimeFromRTClock() {
   struct calendar currentTime;
   Wire.beginTransmission(DS1307_ADDRESS);

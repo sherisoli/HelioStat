@@ -2,6 +2,11 @@
 // "Computing the Solar Vector" Solar Energy 70(5), 431-441, 2001
 // authors M. Blanco-Muriel, D.C. Alarcon-Padilla, T. Lopez-Moratalla, and M. Lara-Coira
 
+/*
+ * Returns the solar vector coordinates given the current UTC
+ * time and the current location. See Types.h for a definition
+ * of the data types.
+ */
 solarCoordinates getSunPos(struct calendar utcTime, struct location utcLocation) {
   Serial.print("Finding the sun's position...\n");
   struct solarCoordinates utcSunCoordinates;

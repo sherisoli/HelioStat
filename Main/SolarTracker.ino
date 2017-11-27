@@ -2,6 +2,12 @@ int iStepsAZ = STEPSAZHOME;
 double dAngleZE = ANGLEZEHOME;
 int iCurrentZEsteps = 8692;
 
+/*
+ * Moves the Azimuth and Zenith motors to track the
+ * coordinates of the solar vector given.
+ * If it is after dark, moves the system to the
+ * home position.
+ */
 void trackSolarVector(solarCoordinates utcSunCoordinates) {
   Serial.print("Tracking the solar vector...\n");
   int iDeltaStepsAZ, iDeltaStepsZE;
@@ -22,6 +28,11 @@ void trackSolarVector(solarCoordinates utcSunCoordinates) {
   Serial.print("\n");
 }
 
+/*
+ * Returns the number of steps the Zenith
+ * motor needs to move by given the Zenith
+ * angle, theta, in degrees.
+ */
 int getZenithSteps(double theta) {
   double beta0; // Initial guess
   double beta; // Approximate solution
