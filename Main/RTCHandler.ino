@@ -1,6 +1,10 @@
 #include <Wire.h>
 #include "RTClib.h"
 #include <TimeLib.h>
+#define HOURSTOUTC 5
+#define SECPERHOUR 3600
+#define SECPERDAY 86400
+#define DEMOTIMEFACTOR 120 // factory by which to accelerate time
 
 DS1307 rtc;
 DateTime startTime;
@@ -24,7 +28,7 @@ calendar getTimeFromRTClock() {
   if (Wire.requestFrom(DS1307_ADDRESS, 7) == 7) { // request 7 bytes from DS1307
     currentTime.seconds = bcdToDec(Wire.read());
     currentTime.minutes = bcdToDec(Wire.read());
-    currentTime.hours = bcdToDec(Wire.read()) + 5; // UTC time conversion
+    currentTime.hours = bcdToDec(Wire.read()) + HOURSTOUTC;
     if (currentTime.hours >= 24) {
       currentTime.hours = 0;
     }
@@ -89,17 +93,17 @@ calendar getAcceleratedTime() {
 
     DateTime currentTime = DateTime(currentUTCTime.year, currentUTCTime.month, currentUTCTime.day, (int)currentUTCTime.hours, (int)currentUTCTime.minutes, (int)currentUTCTime.seconds);
 
-    long startTimeUnix = startTime.unixtime() +5*3600; // to make UTC
+    long startTimeUnix = startTime.unixtime() + HOURSTOUTC*SECPERHOUR;
     long currentTimeUnix = currentTime.unixtime();
 
     long elapsedSecondsUnix;
     if (currentTimeUnix >= startTimeUnix) {
       elapsedSecondsUnix = currentTimeUnix - startTimeUnix;
     } else {
-      elapsedSecondsUnix = (86400L - startTimeUnix) + currentTimeUnix;
+      elapsedSecondsUnix = (SECPERDAY - startTimeUnix) + currentTimeUnix;
     }
 
-    unsigned long acceleratedTotalSeconds = elapsedSecondsUnix*120 + startTimeUnix;
+    unsigned long acceleratedTotalSeconds = elapsedSecondsUnix*DEMOTIMEFACTOR + startTimeUnix;
     time_t raw_time = acceleratedTotalSeconds;
 
     acceleratedTime.seconds = second(raw_time);
