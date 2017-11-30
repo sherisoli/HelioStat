@@ -1,12 +1,15 @@
 #include <Wire.h>
 #include "RTClib.h"
+#include <TimeLib.h>
 
 DS1307 rtc;
+DateTime startTime;
 
 void initializeRTC() {
   Wire.begin(); // join I2C bus
   rtc.begin();
-  rtc.adjust(DateTime(__DATE__, __TIME__));
+  startTime = DateTime(__DATE__, __TIME__);
+  rtc.adjust(startTime); // sketch compilation local time
 }
 
 /*
@@ -73,4 +76,38 @@ void printTimeDouble(double val) {
     Serial.print("0");
   }
   Serial.print((int)val);
+}
+
+/* For demo purposes only.
+ * Condenses 24 hours into 12 minutes.
+ * Therefore, 1 minute represents
+ * 2 elapsed hours.
+ */
+calendar getAcceleratedTime() {
+    struct calendar acceleratedTime;
+    struct calendar currentUTCTime = getTimeFromRTClock();
+
+    DateTime currentTime = DateTime(currentUTCTime.year, currentUTCTime.month, currentUTCTime.day, (int)currentUTCTime.hours, (int)currentUTCTime.minutes, (int)currentUTCTime.seconds);
+
+    long startTimeUnix = startTime.unixtime() +5*3600; // to make UTC
+    long currentTimeUnix = currentTime.unixtime();
+
+    long elapsedSecondsUnix;
+    if (currentTimeUnix >= startTimeUnix) {
+      elapsedSecondsUnix = currentTimeUnix - startTimeUnix;
+    } else {
+      elapsedSecondsUnix = (86400L - startTimeUnix) + currentTimeUnix;
+    }
+
+    unsigned long acceleratedTotalSeconds = elapsedSecondsUnix*120 + startTimeUnix;
+    time_t raw_time = acceleratedTotalSeconds;
+
+    acceleratedTime.seconds = second(raw_time);
+    acceleratedTime.minutes = minute(raw_time);
+    acceleratedTime.hours = hour(raw_time);
+    acceleratedTime.day = day(raw_time);
+    acceleratedTime.month = month(raw_time);
+    acceleratedTime.year = year(raw_time);
+
+    return acceleratedTime;
 }
