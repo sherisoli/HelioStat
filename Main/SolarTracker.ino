@@ -9,12 +9,11 @@ int iCurrentZEsteps = 8692;
  * home position.
  */
 void trackSolarVector(solarCoordinates utcSunCoordinates) {
-  Serial.print("Tracking the solar vector...\n");
-  int iDeltaStepsAZ, iDeltaStepsZE;
-  iDeltaStepsAZ = (int)(utcSunCoordinates.degAzimuth * STEPSPERDEGAZ) - iStepsAZ;
-  MoveMotorAZ(iDeltaStepsAZ);
-  iStepsAZ = (int)(utcSunCoordinates.degAzimuth * STEPSPERDEGAZ);
   if (utcSunCoordinates.degZenith > 00.1 && utcSunCoordinates.degZenith < 89.9) {
+    Serial.print("Tracking the solar vector...\n");
+    int iDeltaStepsAZ = (int)(utcSunCoordinates.degAzimuth * STEPSPERDEGAZ) - iStepsAZ;
+    MoveMotorAZ(iDeltaStepsAZ);
+    iStepsAZ = (int)(utcSunCoordinates.degAzimuth * STEPSPERDEGAZ);
     int iFutureZEsteps = getZenithSteps(utcSunCoordinates.degZenith);
     int deltaZenithSteps = iCurrentZEsteps - iFutureZEsteps; //store in getZenith result in variable
     MoveMotorZE(deltaZenithSteps);

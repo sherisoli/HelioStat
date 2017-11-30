@@ -41,7 +41,7 @@ void MoveMotorZE(int steps) {
   }
   delay(10);
   for (int stepCount = 0; stepCount < steps; stepCount++) {
-    digitalWrite(MOTAZCLK, HIGH);
+    digitalWrite(MOTZECLK, HIGH);
     delay(STEPDLY);
     digitalWrite(MOTZECLK, LOW);
     delay(STEPDLY);

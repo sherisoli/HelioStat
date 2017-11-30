@@ -21,7 +21,10 @@ calendar getTimeFromRTClock() {
   if (Wire.requestFrom(DS1307_ADDRESS, 7) == 7) { // request 7 bytes from DS1307
     currentTime.seconds = bcdToDec(Wire.read());
     currentTime.minutes = bcdToDec(Wire.read());
-    currentTime.hours = bcdToDec(Wire.read());
+    currentTime.hours = bcdToDec(Wire.read()) + 5; // UTC time conversion
+    if (currentTime.hours >= 24) {
+      currentTime.hours = 0;
+    }
 
     Wire.read(); // day of the week
     currentTime.day = bcdToDec(Wire.read());
