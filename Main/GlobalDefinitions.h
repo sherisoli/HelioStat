@@ -16,8 +16,9 @@
 #define dAstroUnit 149597890 // km
 
 // motor definitions
-#define STEPSPERDEGAZ 20.0
-#define STEPDLY 5
+#define STEPSPERDEGAZ 20.0 // 1.8 deg per step and 36:1 reduction worm gears
+#define STEPDLYZE 2
+#define STEPDLYAZ 1
 
 // home position definitions
 #define MAXAZHOMESTEP 6250

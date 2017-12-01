@@ -5,9 +5,9 @@ void homeAzimuth() {
     int optoStateAZ = digitalRead(OPTOPINAZ);
     if (optoStateAZ == LOW) { // optical sensor is not blocked
       digitalWrite(MOTAZCLK, HIGH);
-      delay(STEPDLY);
+      delay(STEPDLYAZ);
       digitalWrite(MOTAZCLK, LOW);
-      delay(STEPDLY);
+      delay(STEPDLYAZ);
     } else { // optical sensor is blocked
       // it has reached the azimuth home position
       break;
@@ -21,10 +21,10 @@ void homeZenith() {
   for (int stepCount = 0; stepCount < MAXZEHOMESTEP; stepCount++) { // should be home in 180 deg worth of steps
     int optoStateZE = digitalRead(OPTOPINZE);
     if (optoStateZE == LOW) { // optical sensor is not blocked
+      digitalWrite(MOTZECLK, LOW); // CW
+      delay(STEPDLYZE);
       digitalWrite(MOTZECLK, HIGH);
-      delay(STEPDLY);
-      digitalWrite(MOTZECLK, LOW);
-      delay(STEPDLY);
+      delay(STEPDLYZE);
     } else { // optical sensor is blocked
       break;
     }

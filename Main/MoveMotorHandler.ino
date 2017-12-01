@@ -17,9 +17,9 @@ void MoveMotorAZ(int steps) {
   delay(10);
   for (int stepCount = 0; stepCount < steps; stepCount++) {
     digitalWrite(MOTAZCLK, HIGH);
-    delay(STEPDLY);
+    delay(STEPDLYAZ);
     digitalWrite(MOTAZCLK, LOW);
-    delay(STEPDLY);
+    delay(STEPDLYAZ);
   }
 }
 
@@ -33,17 +33,17 @@ void MoveMotorZE(int steps) {
     return;
   } else if (steps > 0) {
     Serial.print("Moving Zenith motor clockwise "); Serial.print(steps); Serial.print(" steps...\n");
-    digitalWrite(MOTZECWCCW, HIGH); // positive # of steps means CW = LOW
+    digitalWrite(MOTZECWCCW, LOW); // positive # of steps means CCW = LOW
   } else { // steps < 0
     steps = - steps; // absolute value
     Serial.print("Moving Zenith motor counter-clockwise "); Serial.print(steps); Serial.print(" steps...\n");
-    digitalWrite(MOTZECWCCW, LOW); // negative # of steps means CCW = HIGH
+    digitalWrite(MOTZECWCCW, HIGH); // negative # of steps means CW = HIGH
   }
   delay(10);
   for (int stepCount = 0; stepCount < steps; stepCount++) {
-    digitalWrite(MOTZECLK, HIGH);
-    delay(STEPDLY);
     digitalWrite(MOTZECLK, LOW);
-    delay(STEPDLY);
+    delay(STEPDLYZE);
+    digitalWrite(MOTZECLK, HIGH);
+    delay(STEPDLYZE);
   }
 }
